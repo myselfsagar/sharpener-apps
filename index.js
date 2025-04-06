@@ -1,9 +1,12 @@
 const express = require("express");
 const app = express();
+
+//import routes
 const userRouter = require("./routes/users");
 const productRouter = require("./routes/products");
 const cartRouter = require("./routes/cart");
 
+//use the routes
 app.use("/users", userRouter);
 app.use("/products", productRouter);
 app.use("/cart", cartRouter);
@@ -13,7 +16,8 @@ app.use((req, res, next) => {
   res.status(404).send("404 Page not found");
 });
 
+//start the server
 const PORT = 4000;
 app.listen(PORT, () => {
-  console.log(`Listening from http://localhost:${PORT}/`);
+  console.log(`server is running on http://localhost:${PORT}/`);
 });

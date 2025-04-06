@@ -1,10 +1,10 @@
-//fetch all products
-const fetchProducts = (req, res) => {
+//get all products
+const getAllProducts = (req, res) => {
   res.send("Fetching all products");
 };
 
 //add new product
-const addNewProduct = (req, res) => {
+const addProduct = (req, res) => {
   res.send("Adding a new product");
 };
 
@@ -14,7 +14,7 @@ const getProductById = (req, res) => {
 };
 
 module.exports = {
-  fetchProducts,
-  addNewProduct,
+  getAllProducts,
+  addProduct,
   getProductById,
 };
