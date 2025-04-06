@@ -8,7 +8,9 @@ const getAllProducts = (req, res) => {
 
 //add new product
 const addProduct = (req, res) => {
-  res.send("Adding a new product");
+  // res.send("Adding a new product");
+  const data = req.body;
+  res.send({ value: data.productName });
 };
 
 //get product by id
