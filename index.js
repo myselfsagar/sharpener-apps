@@ -7,9 +7,9 @@ const productRouter = require("./routes/products");
 const cartRouter = require("./routes/cart");
 
 //use the routes
-app.use("/users", userRouter);
-app.use("/products", productRouter);
-app.use("/cart", cartRouter);
+app.use("/api/users", userRouter);
+app.use("/api/products", productRouter);
+app.use("/api/cart", cartRouter);
 
 //default page for other pages
 app.use((req, res, next) => {
