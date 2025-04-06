@@ -1,6 +1,9 @@
+const path = require("path");
+
 //get all products
 const getAllProducts = (req, res) => {
-  res.send("Fetching all products");
+  // res.send("Fetching all products");
+  res.sendFile(path.join(__dirname, "..", "view", "product.html"));
 };
 
 //add new product
