@@ -1,23 +1,17 @@
 const express = require("express");
 const app = express();
 
-//import routes
-const userRouter = require("./routes/users");
-const productRouter = require("./routes/products");
-const cartRouter = require("./routes/cart");
+//connect to db
+const dbConnection = require("./utils/db-connection");
 
-app.use(express.static("public"));
+//import routes
+const studentRoutes = require("./routes/studentRoutes");
+
+//middleware
 app.use(express.json());
 
-//use the routes
-app.use("/api/users", userRouter);
-app.use("/api/products", productRouter);
-app.use("/api/cart", cartRouter);
-
-//default page for other pages
-app.use((req, res, next) => {
-  res.status(404).send("404 Page not found");
-});
+//use routes
+app.use("/students", studentRoutes);
 
 //start the server
 const PORT = 4000;
