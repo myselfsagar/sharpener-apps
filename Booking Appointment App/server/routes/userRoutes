@@ -1,0 +1,8 @@
+const router = require("express").Router();
+const userControllers = require("../controllers/userControllers");
+
+router.post("/add-user/", userControllers.addUser);
+router.get("/get-users", userControllers.getAllUsers);
+router.delete("/delete-user/:id", userControllers.deleteUser);
+
+module.exports = router;
