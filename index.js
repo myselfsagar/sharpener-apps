@@ -4,6 +4,9 @@ const app = express();
 //connect to db
 const dbConnection = require("./utils/db-connection");
 
+//Models
+const studentModel = require("./models/Student");
+
 //import routes
 const studentRoutes = require("./routes/studentRoutes");
 
@@ -13,8 +16,15 @@ app.use(express.json());
 //use routes
 app.use("/students", studentRoutes);
 
-//start the server
-const PORT = 4000;
-app.listen(PORT, () => {
-  console.log(`server is running on http://localhost:${PORT}/`);
-});
+dbConnection
+  .sync({ force: false })
+  .then(() => {
+    //start the server
+    const PORT = 4000;
+    app.listen(PORT, () => {
+      console.log(`server is running on http://localhost:${PORT}/`);
+    });
+  })
+  .catch((err) => {
+    console.log(err);
+  });
