@@ -5,16 +5,19 @@ const app = express();
 const dbConnection = require("./utils/db-connection");
 
 //Models
-const studentModel = require("./models/Student");
+require("./models");
+// const studentModel = require("./models/Student");
 
 //import routes
 const studentRoutes = require("./routes/studentRoutes");
+const associationRoutes = require("./routes/associationRoutes");
 
 //middleware
 app.use(express.json());
 
 //use routes
 app.use("/students", studentRoutes);
+app.use("/", associationRoutes);
 
 dbConnection
   .sync({ force: false })
