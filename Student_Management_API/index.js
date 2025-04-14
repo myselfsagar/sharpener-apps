@@ -10,6 +10,7 @@ require("./models");
 
 //import routes
 const studentRoutes = require("./routes/studentRoutes");
+const courseRoutes = require("./routes/courseRoutes");
 const associationRoutes = require("./routes/associationRoutes");
 
 //middleware
@@ -17,10 +18,11 @@ app.use(express.json());
 
 //use routes
 app.use("/students", studentRoutes);
+app.use("/courses", courseRoutes);
 app.use("/", associationRoutes);
 
 dbConnection
-  .sync({ force: false })
+  .sync({ alter: true })
   .then(() => {
     //start the server
     const PORT = 4000;
