@@ -1,5 +1,5 @@
 const API_URL = "http://localhost:4000/expenses"; // Base API URL
-const formElement = document.querySelector("form");
+const formElement = document.getElementById("input-form");
 const expenseLists = document.getElementById("expenseLists");
 
 // Function to create and append a new expense item to the list
@@ -15,49 +15,62 @@ function addExpenseToUI(expense) {
   deleteBtn.classList.add("deleteExpense");
   deleteBtn.textContent = "Delete";
   deleteBtn.onclick = async () => {
-    await axios.delete(`/${expense.id}`);
-    liItem.remove(); // **Remove from UI without full refresh**
+    try {
+      await axios.delete(`${API_URL}/${expense.id}`);
+      liItem.remove(); // Remove from UI without full refresh
+    } catch (err) {
+      console.error("Error deleting expense:", err);
+    }
   };
 
   // Edit Expense Button
   let editBtn = document.createElement("button");
   editBtn.classList.add("editExpense");
   editBtn.textContent = "Edit";
-  editBtn.onclick = async () => {
-    handleEditExpense(expense, liItem);
-  };
+  editBtn.onclick = () => handleEditExpense(expense, liItem);
 
-  // Wrapper for buttons
   let buttonWrapper = document.createElement("div");
   buttonWrapper.classList.add("button-wrapper");
   buttonWrapper.appendChild(deleteBtn);
   buttonWrapper.appendChild(editBtn);
 
   liItem.appendChild(buttonWrapper);
-  expenseLists.appendChild(liItem);
+  expenseLists.prepend(liItem);
 }
 
 // Function to display expenses initially
 async function loadExpenses() {
   expenseLists.innerHTML = ""; // Clear list on initial load
   try {
-    const res = await axios.get("/");
-    res.data.forEach(addExpenseToUI); // **Append expenses efficiently**
+    const res = await axios.get(API_URL);
+    res.data.forEach(addExpenseToUI);
   } catch (err) {
     console.error("Error fetching expenses:", err);
   }
 }
 
 // Function to handle editing an expense
-async function handleEditExpense(expense, listItem) {
-  // Pre-fill the form with existing details
+function handleEditExpense(expense, listItem) {
   document.getElementById("expenseAmount").value = expense.amount;
   document.getElementById("expenseDescription").value = expense.description;
   document.getElementById("expenseCategory").value = expense.category;
 
-  // Remove the item from UI and delete from backend
-  await axios.delete(`/${expense.id}`);
-  listItem.remove();
+  formElement.onsubmit = async (event) => {
+    event.preventDefault();
+
+    let updatedExpense = {
+      amount: document.getElementById("expenseAmount").value,
+      description: document.getElementById("expenseDescription").value,
+      category: document.getElementById("expenseCategory").value,
+    };
+
+    try {
+      await axios.put(`${API_URL}/${expense.id}`, updatedExpense);
+      listItem.textContent = `${updatedExpense.amount} - ${updatedExpense.category} - ${updatedExpense.description}`;
+    } catch (err) {
+      console.error("Error updating expense:", err);
+    }
+  };
 }
 
 // Handle form submission (add new expense)
@@ -71,19 +84,14 @@ formElement.addEventListener("submit", async (event) => {
   if (!amount || !description || !category) return;
 
   try {
-    const res = await axios.post("/", { amount, description, category });
+    const res = await axios.post(API_URL, { amount, description, category });
 
-    // **Add to UI directly without full refresh**
     addExpenseToUI(res.data);
 
-    // Clear input fields
-    document.getElementById("expenseAmount").value = "";
-    document.getElementById("expenseDescription").value = "";
-    document.getElementById("expenseCategory").value = "fuel"; // Reset category to default
+    formElement.reset(); // Clear input fields efficiently
   } catch (err) {
     console.error("Error adding expense:", err);
   }
 });
 
-// Load expenses once when the page is loaded
 document.addEventListener("DOMContentLoaded", loadExpenses);
