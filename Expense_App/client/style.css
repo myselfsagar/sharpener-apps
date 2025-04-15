@@ -1,0 +1,103 @@
+/* Reset default styling */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Form Styling */
+.input-form {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  margin: auto;
+}
+
+/* Labels & Inputs */
+label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+input,
+select {
+  width: 95%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-top: 15px;
+  width: 100%;
+  padding: 10px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+#expenseLists {
+  list-style: none;
+  padding: 0;
+  margin-top: 30px;
+  width: 350px;
+  margin-inline: auto;
+}
+
+.expenseList {
+  background: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+}
+
+.button-wrapper {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.deleteExpense,
+.editExpense {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  width: auto;
+}
+
+.deleteExpense:hover {
+  background-color: #cc0000;
+}
+
+.editExpense {
+  background-color: #28a745;
+}
+
+.editExpense:hover {
+  background-color: #1e7e34;
+}
