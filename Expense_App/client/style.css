@@ -1,103 +1,271 @@
-/* Reset default styling */
+/* ===== Base Styles ===== */
+:root {
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+  --primary-color: #007bff;
+  --danger-color: #ff4d4d;
+  --success-color: #28a745;
+  --border-radius: 8px;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background-color: #f8f9fa;
   margin: 0;
-  padding: 20px;
+  padding: var(--space-md);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  line-height: 1.5;
+}
+
+/* ===== Container & Layout ===== */
+.container {
+  width: 100%;
+  max-width: 400px;
 }
 
 h1 {
   text-align: center;
-  font-size: 24px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 20px;
+  color: #2c3e50;
+  margin-bottom: var(--space-lg);
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  font-weight: 700;
+  letter-spacing: -0.5px;
 }
 
-/* Form Styling */
+/* ===== Form Styles ===== */
 .input-form {
   background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 300px;
-  margin: auto;
+  padding: var(--space-md);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+  width: 100%;
+  margin: 0 auto;
+  border: 1px solid #e9ecef;
 }
 
-/* Labels & Inputs */
+.input-form h2 {
+  margin-top: 0;
+  margin-bottom: var(--space-md);
+  font-size: 1.25rem;
+  color: #495057;
+  text-align: center;
+}
+
 label {
   display: block;
-  margin-top: 10px;
-  font-weight: bold;
+  margin-top: var(--space-sm);
+  font-weight: 600;
+  color: #495057;
+  font-size: 0.9rem;
 }
 
 input,
 select {
-  width: 95%;
-  padding: 8px;
-  margin-top: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-  margin-top: 15px;
   width: 100%;
-  padding: 10px;
+  padding: 0.75rem;
+  margin-top: var(--space-xs);
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-button:hover {
-  background-color: #0056b3;
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 
+/* ===== Button Styles ===== */
+button {
+  cursor: pointer;
+  border: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+#addExpense {
+  background-color: var(--success-color);
+  color: white;
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: var(--space-md);
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  letter-spacing: 0.5px;
+}
+
+#addExpense:hover {
+  background-color: #2f9e44;
+  transform: translateY(-1px);
+}
+
+/* ===== Expense List Styles ===== */
 #expenseLists {
   list-style: none;
   padding: 0;
-  margin-top: 30px;
-  width: 350px;
-  margin-inline: auto;
+  margin: var(--space-lg) auto 0;
+  width: 100%;
+}
+
+#expenseLists:empty::before {
+  content: "No expenses added yet!";
+  display: block;
+  text-align: center;
+  color: #6c757d;
+  padding: var(--space-md);
+  font-style: italic;
 }
 
 .expenseList {
   background: #fff;
-  padding: 15px;
-  border-radius: 8px;
+  padding: var(--space-sm);
+  border-radius: var(--border-radius);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  margin-bottom: 10px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--space-sm);
+  border-left: 4px solid;
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.expenseList:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Category Colors */
+.expenseList[data-category="fuel"] {
+  border-left-color: #ff6b6b;
+}
+.expenseList[data-category="food"] {
+  border-left-color: #51cf66;
+}
+.expenseList[data-category="electricity"] {
+  border-left-color: #339af0;
+}
+.expenseList[data-category="movie"] {
+  border-left-color: #cc5de8;
+}
+
+.expenseList::before {
+  content: attr(data-category);
+  position: absolute;
+  top: -10px;
+  right: 10px;
+  background: white;
+  padding: 0 5px;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: #495057;
+  border-radius: 4px;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ===== Button Wrapper ===== */
 .button-wrapper {
   display: flex;
-  gap: 10px;
+  gap: var(--space-xs);
   align-items: center;
 }
 
 .deleteExpense,
 .editExpense {
-  background-color: #ff4d4d;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-  border-radius: 5px;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
   width: auto;
 }
 
+.deleteExpense {
+  background-color: var(--danger-color);
+  color: white;
+}
+
 .deleteExpense:hover {
-  background-color: #cc0000;
+  background-color: #e03131;
 }
 
 .editExpense {
-  background-color: #28a745;
+  background-color: #228be6;
+  color: white;
 }
 
 .editExpense:hover {
-  background-color: #1e7e34;
+  background-color: #1c7ed6;
+}
+
+/* ===== Divider ===== */
+.divider {
+  display: none;
+}
+
+/* ===== Desktop Layout ===== */
+@media (min-width: 768px) {
+  .container {
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .content-wrapper {
+    display: flex;
+    gap: var(--space-xl);
+    width: 100%;
+    align-items: flex-start;
+  }
+
+  .input-form {
+    flex: 0 0 35%;
+    max-width: 400px;
+    position: sticky;
+    top: var(--space-md);
+    margin: 0;
+  }
+
+  #expenseLists {
+    flex: 1;
+    margin: 0;
+    max-height: calc(100vh - 180px);
+    overflow-y: auto;
+    padding-right: var(--space-xs);
+  }
+
+  .divider {
+    display: block;
+    background-color: #dee2e6;
+    width: 1px;
+    min-height: 100%;
+  }
+
+  /* Custom scrollbar */
+  #expenseLists::-webkit-scrollbar {
+    width: 8px;
+  }
+  #expenseLists::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+  #expenseLists::-webkit-scrollbar-thumb {
+    background: #ced4da;
+    border-radius: 4px;
+  }
+  #expenseLists::-webkit-scrollbar-thumb:hover {
+    background: #adb5bd;
+  }
 }
