@@ -2,53 +2,43 @@ const API_URL = "http://localhost:4000/products";
 const formElement = document.getElementById("input-form");
 const productsContainer = document.getElementById("product-lists");
 
+let editingProduct = null; // Tracks the product being edited
+
 // Function to create and append a new product to the list
 function addProductToUI(product) {
   const productElement = document.createElement("div");
   productElement.classList.add("product");
   productElement.setAttribute("data-id", product.id);
 
-  const productName = document.createElement("p");
-  productName.classList.add("product-name");
-  productName.textContent = product.name;
+  productElement.innerHTML = `
+      <p class="product-name">${product.name}</p>
+      <p class="product-description">${product.description}</p>
+      <p class="product-price">₹${parseFloat(product.price).toFixed(2)}</p>
+      <p class="product-quantity">${product.quantity}</p>
+      <div class="product-actions">
+        <input type="number" min="1" max="${product.quantity}" 
+               id="quantity-to-buy" placeholder="Qty">
+        <button class="buy-btn">Buy</button>
+        <button class="remove-btn">Remove</button>
+      </div>
+    `;
 
-  const productDescription = document.createElement("p");
-  productDescription.classList.add("product-description");
-  productDescription.textContent = product.description;
+  // Add event listeners
+  productElement
+    .querySelector(".buy-btn")
+    .addEventListener("click", () =>
+      handleupdateQuantity(product, productElement)
+    );
 
-  const productPrice = document.createElement("p");
-  productPrice.classList.add("product-price");
-  productPrice.textContent = product.price;
-
-  const productQuantity = document.createElement("p");
-  productQuantity.classList.add("product-quantity");
-  productQuantity.textContent = product.quantity;
-
-  const quantityInput = document.createElement("input");
-  quantityInput.setAttribute("type", "number");
-  quantityInput.setAttribute("min", "1");
-  quantityInput.setAttribute("id", "quantity-to-buy");
-
-  const buyProduct = document.createElement("button");
-  buyProduct.textContent = "Buy now";
-  buyProduct.addEventListener("click", () =>
-    handleupdateQuantity(product, productElement)
-  );
-
-  const removeProduct = document.createElement("button");
-  removeProduct.textContent = "Remove Product";
-  removeProduct.onclick = () => handleRemoveProduct(product, productElement);
-
-  productElement.appendChild(productName);
-  productElement.appendChild(productDescription);
-  productElement.appendChild(productPrice);
-  productElement.appendChild(productQuantity);
-  productElement.appendChild(quantityInput);
-  productElement.appendChild(buyProduct);
-  productElement.appendChild(removeProduct);
+  productElement
+    .querySelector(".remove-btn")
+    .addEventListener("click", () =>
+      handleRemoveProduct(product, productElement)
+    );
 
   productsContainer.appendChild(productElement);
 }
+
 // Function to display products initially
 async function loadProducts() {
   //   productsContainer.innerHTML = ""; // Clear list on initial load
@@ -60,6 +50,7 @@ async function loadProducts() {
     alert("Error fetching products. Please try again.");
   }
 }
+
 // Function to update the quantity
 async function handleupdateQuantity(product, productElement) {
   try {
@@ -110,6 +101,7 @@ async function handleupdateQuantity(product, productElement) {
     alert("Error updating product quantity. Please try again.");
   }
 }
+
 // Function to delete an product
 async function handleRemoveProduct(product, productElement) {
   try {
@@ -120,6 +112,7 @@ async function handleRemoveProduct(product, productElement) {
     alert("Error removing product. Please try again.");
   }
 }
+
 // Handle form submission (Add or Edit Product)
 async function handleAddProduct(event) {
   event.preventDefault();
@@ -132,13 +125,27 @@ async function handleAddProduct(event) {
   if (!name || !description || !price || !quantity) return;
 
   try {
-    const res = await axios.post(`${API_URL}/add-product`, {
-      name,
-      description,
-      price,
-      quantity,
-    });
-    addProductToUI(res.data);
+    if (editingProduct) {
+      // If editing, update the product
+      const updatedProduct = { amount, description, category };
+      await axios.put(
+        `${API_URL}/update-product/${editingProduct.id}`,
+        updatedProduct
+      );
+
+      addProductToUI({ id: editingProduct.id, amount, description, category });
+
+      editingProduct = null; // Reset edit mode
+    } else {
+      // If not editing, create a new product
+      const res = await axios.post(`${API_URL}/add-product`, {
+        name,
+        description,
+        price,
+        quantity,
+      });
+      addProductToUI(res.data);
+    }
 
     formElement.reset();
   } catch (err) {

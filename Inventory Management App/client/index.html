@@ -12,7 +12,8 @@
         <h1>Store Dashboard</h1>
       </div>
 
-      <div class="add-product">
+      <!-- <div class="add-product">
+
         <h2>Add Product</h2>
         <form id="input-form" onsubmit="handleAddProduct(event)">
           <input type="text" placeholder="Name" name="name" id="name" />
@@ -32,10 +33,56 @@
 
           <button type="submit">Add Product</button>
         </form>
+      </div> -->
+
+      <div class="add-product">
+        <h2>Add a product</h2>
+        <form id="input-form" onsubmit="handleAddProduct(event)">
+          <div class="form-row">
+            <input
+              type="text"
+              placeholder="Name"
+              name="name"
+              id="name"
+              required
+            />
+            <input
+              type="text"
+              placeholder="Description"
+              name="description"
+              id="description"
+              required
+            />
+            <input
+              type="number"
+              step="0.01"
+              placeholder="Price"
+              name="price"
+              id="price"
+              required
+            />
+            <input
+              type="number"
+              min="1"
+              placeholder="Quantity"
+              name="quantity"
+              id="quantity"
+              required
+            />
+            <button type="submit">Add Product</button>
+          </div>
+        </form>
       </div>
 
       <div id="product-lists">
         <h2>All Products:</h2>
+        <div class="products-header">
+          <span>Name</span>
+          <span>Description</span>
+          <span>Price</span>
+          <span>Quantity</span>
+          <span>Actions</span>
+        </div>
       </div>
     </div>
 
