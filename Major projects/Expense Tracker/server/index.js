@@ -9,9 +9,11 @@ const dbConnection = require("./utils/db-connection");
 
 //all models
 const User = require("./models/User");
+const Expense = require("./models/Expense");
 
 //import all routes
 const authRoutes = require("./routes/authRoutes");
+const expenseRoutes = require("./routes/expenseRoutes");
 
 //middlewares
 app.use(express.json());
@@ -19,6 +21,7 @@ app.use(cors({ origin: "http://127.0.0.1:5500" }));
 
 //use all routes
 app.use("/user", authRoutes);
+app.use("/expense", expenseRoutes);
 
 (async () => {
   try {

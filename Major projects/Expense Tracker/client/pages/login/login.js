@@ -13,7 +13,7 @@ async function handleLoginForm(event) {
       password,
     });
     console.log(response);
-    window.location.href = "../../index.html";
+    window.location.href = "../../ExpenseTracker/index.html";
   } catch (err) {
     if (!err.status) {
       console.log("Network error:", err.message);
