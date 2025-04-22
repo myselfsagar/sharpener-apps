@@ -13,7 +13,21 @@ async function handleLoginForm(event) {
       password,
     });
     console.log(response);
+    window.location.href = "../../index.html";
   } catch (err) {
-    console.log(err);
+    if (!err.status) {
+      console.log("Network error:", err.message);
+      return alert("Network error. Please check your connection.");
+    } else {
+      console.log(err);
+      const errorMessages = {
+        400: "All fields are mandatory",
+        404: "User not found",
+        401: "Incorrect password",
+      };
+      alert(
+        errorMessages[err.response.status] || "An unexpected error occurred."
+      );
+    }
   }
 }
