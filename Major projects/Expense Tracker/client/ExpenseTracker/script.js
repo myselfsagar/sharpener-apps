@@ -1,11 +1,11 @@
 const SERVER_BASE_URL = "http://localhost:4000/expense";
 
-async function handleDeleteExpense(expense, liItem) {
+async function handleDeleteExpense(expenseId) {
   try {
     const response = await axios.delete(
-      `${SERVER_BASE_URL}/delete-expense/${expense.id}`
+      `${SERVER_BASE_URL}/delete-expense/${expenseId}`
     );
-    liItem.remove();
+    document.getElementById(`expense-${expenseId}`).remove();
   } catch (err) {
     console.log(err);
     alert(err.message);
@@ -13,39 +13,36 @@ async function handleDeleteExpense(expense, liItem) {
 }
 
 function createExpenseList(expense) {
-  let liItem = document.createElement("li");
-  liItem.classList.add("expenseList");
-  liItem.setAttribute("data-id", expense.id);
+  const parentElement = document.getElementById("expenseLists");
+  const expenseElemId = `expense-${expense.id}`;
 
-  liItem.innerHTML = `
+  parentElement.innerHTML += `
+      <li id=${expenseElemId}>
         ${expense.amount} - ${expense.category} - ${expense.description}
-        <button class="deleteExpense">Delete Expense</button>
-    `;
-
-  // Add event listeners for delete buttons
-  liItem
-    .querySelector(".deleteExpense")
-    .addEventListener("click", () => handleDeleteExpense(expense, liItem));
-
-  // Append to the list
-  expenseLists.appendChild(liItem);
+        <button class="deleteExpense" onclick="handleDeleteExpense(${expense.id})">
+          Delete Expense
+        </button>
+      </li>
+  `;
 }
 
 async function handleExpenseForm(event) {
   event.preventDefault();
 
-  let amount = document.getElementById("amount").value;
-  let description = document.getElementById("description").value;
-  let category = document.getElementById("category").value;
+  const expenseDetails = {
+    amount: event.target.amount.value,
+    description: event.target.description.value,
+    category: event.target.category.value,
+  };
 
   if (!amount || !description || !category) return;
 
   try {
-    const response = await axios.post(`${SERVER_BASE_URL}/add-expense`, {
-      amount,
-      description,
-      category,
-    });
+    const response = await axios.post(
+      `${SERVER_BASE_URL}/add-expense`,
+      expenseDetails
+    );
+
     createExpenseList(response.data);
     event.target.reset();
   } catch (err) {
