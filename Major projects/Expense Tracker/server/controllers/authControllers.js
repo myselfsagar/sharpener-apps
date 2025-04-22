@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const bcrypt = require("bcrypt");
 
 const signupController = async (req, res) => {
   const { name, email, password } = req.body;
@@ -15,10 +16,17 @@ const signupController = async (req, res) => {
       return res.status(409).json({ Error: "User already exists" });
     }
 
-    //create the new user and send it
-    const newUser = await User.create({ name, email, password });
+    //hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    res.status(200).json({ Message: "Signup successful" });
+    //create the new user and send it
+    const newUser = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+    });
+
+    res.status(201).json({ Message: "Signup successful" });
   } catch (err) {
     console.log("Error creating user", err);
     return res.status(500).json({ Error: `Internal error - ${err.message}` });
@@ -40,8 +48,10 @@ const loginController = async (req, res) => {
       return res.status(404).json({ Error: "User not found" });
     }
 
+    const matched = await bcrypt.compare(password, user.password);
+
     //check entered password with the actual password
-    if (password !== user.password) {
+    if (!matched) {
       return res.status(401).json({ Error: "Incorrect password" });
     }
 
