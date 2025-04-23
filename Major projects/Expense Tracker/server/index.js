@@ -11,6 +11,10 @@ const dbConnection = require("./utils/db-connection");
 const User = require("./models/User");
 const Expense = require("./models/Expense");
 
+//association
+User.hasMany(Expense);
+Expense.belongsTo(User);
+
 //import all routes
 const authRoutes = require("./routes/authRoutes");
 const expenseRoutes = require("./routes/expenseRoutes");

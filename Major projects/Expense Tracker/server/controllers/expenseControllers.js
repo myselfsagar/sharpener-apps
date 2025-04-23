@@ -14,6 +14,7 @@ const addExpense = async (req, res) => {
       amount,
       description,
       category,
+      userId: req.userId,
     });
 
     res.status(201).json(expense);
@@ -27,7 +28,7 @@ const addExpense = async (req, res) => {
 
 const getAllExpenses = async (req, res) => {
   try {
-    const expenses = await Expense.findAll();
+    const expenses = await Expense.findAll({ where: { userId: req.userId } });
 
     res.status(200).json(expenses);
   } catch (err) {
@@ -40,9 +41,12 @@ const getAllExpenses = async (req, res) => {
 
 const deleteExpense = async (req, res) => {
   try {
-    const { id } = req.params;
-    const expense = await Expense.destroy({ where: { id } });
-    if (!expense) {
+    const expenseId = req.params.id;
+
+    const expense = await Expense.destroy({
+      where: { id: expenseId, userId: req.userId },
+    });
+    if (expense === 0) {
       return res.status(404).json({ Error: "Expense not found" });
     }
     res.status(200).json({ Message: "Expense deleted successfully" });

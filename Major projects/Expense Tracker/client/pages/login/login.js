@@ -13,6 +13,9 @@ async function handleLoginForm(event) {
       password,
     });
     console.log(response);
+
+    localStorage.setItem("access_token", response.data.accessToken);
+
     window.location.href = "../../ExpenseTracker/index.html";
   } catch (err) {
     if (!err.status) {

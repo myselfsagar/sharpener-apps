@@ -2,8 +2,14 @@ const SERVER_BASE_URL = "http://localhost:4000/expense";
 
 async function handleDeleteExpense(expenseId) {
   try {
+    const token = localStorage.getItem("access_token");
     const response = await axios.delete(
-      `${SERVER_BASE_URL}/delete-expense/${expenseId}`
+      `${SERVER_BASE_URL}/delete-expense/${expenseId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
     document.getElementById(`expense-${expenseId}`).remove();
   } catch (err) {
@@ -38,9 +44,15 @@ async function handleExpenseForm(event) {
   if (!amount || !description || !category) return;
 
   try {
+    const token = localStorage.getItem("access_token");
     const response = await axios.post(
       `${SERVER_BASE_URL}/add-expense`,
-      expenseDetails
+      expenseDetails,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
 
     createExpenseList(response.data);
@@ -53,7 +65,12 @@ async function handleExpenseForm(event) {
 
 async function fetchAllExpenses() {
   try {
-    const response = await axios.get(`${SERVER_BASE_URL}/get-all-expenses`);
+    const token = localStorage.getItem("access_token");
+    const response = await axios.get(`${SERVER_BASE_URL}/get-all-expenses`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     response.data.forEach(createExpenseList);
   } catch (err) {
     console.log(err);

@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const signupController = async (req, res) => {
   const { name, email, password } = req.body;
@@ -55,10 +56,21 @@ const loginController = async (req, res) => {
       return res.status(401).json({ Error: "Incorrect password" });
     }
 
-    res.status(200).json({ Message: "User login successful" });
+    const accessToken = generateAccessToken({ userId: user.id });
+
+    res.status(200).json({ accessToken });
   } catch (err) {
     console.log("Error while login", err);
     return res.status(500).json({ Error: `Internal error - ${err.message}` });
+  }
+};
+
+const generateAccessToken = (data) => {
+  try {
+    const token = jwt.sign(data, process.env.ACCESS_TOKEN_SECRET_KEY);
+    return token;
+  } catch (err) {
+    console.log(err);
   }
 };
 
