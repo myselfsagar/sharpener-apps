@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Expense Tracker App</title>
+    <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
   </head>
   <body>
     <div class="app">
@@ -23,7 +24,11 @@
 
         <button type="submit" id="addExpense">Add Expense</button>
       </form>
+
       <ul id="expenseLists"></ul>
+
+      <button id="payButton">Buy premium membership</button>
+      <!-- <div id="cf_checkout"></div> -->
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>

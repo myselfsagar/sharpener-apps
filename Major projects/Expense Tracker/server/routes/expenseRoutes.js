@@ -1,12 +1,16 @@
 const router = require("express").Router();
 const expenseControllers = require("../controllers/expenseControllers");
-const verifyUser = require("../middlewares/verifyUser");
+const authMiddleware = require("../middlewares/authMiddleware");
 
-router.post("/add-expense", verifyUser, expenseControllers.addExpense);
-router.get("/get-all-expenses", verifyUser, expenseControllers.getAllExpenses);
+router.post("/add-expense", authMiddleware, expenseControllers.addExpense);
+router.get(
+  "/get-all-expenses",
+  authMiddleware,
+  expenseControllers.getAllExpenses
+);
 router.delete(
   "/delete-expense/:id",
-  verifyUser,
+  authMiddleware,
   expenseControllers.deleteExpense
 );
 
