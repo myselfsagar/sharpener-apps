@@ -10,10 +10,14 @@ const dbConnection = require("./config/dbConfig");
 //all models
 const User = require("./models/User");
 const Expense = require("./models/Expense");
+const Payment = require("./models/Payment");
 
 //association
 User.hasMany(Expense);
 Expense.belongsTo(User);
+
+Payment.belongsTo(User, { foreignKey: "userId" });
+User.hasMany(Payment, { foreignKey: "userId", onDelete: "CASCADE" });
 
 //import all routes
 const authRoutes = require("./routes/authRoutes");

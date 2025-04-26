@@ -12,13 +12,15 @@ async function checkPaymentStatus(orderId) {
     const token = localStorage.getItem("access_token"); // Get stored token
 
     const response = await axios.get(
-      `http://localhost:4000/payment/payment-status?orderId=${orderId}`,
+      `http://localhost:4000/payment/payment-status/${orderId}`,
       {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
 
     const status = response.data.orderStatus;
+
+    alert(`Your payment status is: ${status}`);
     document.getElementById(
       "statusMessage"
     ).innerText = `Your payment status: ${status}`;
@@ -27,6 +29,9 @@ async function checkPaymentStatus(orderId) {
     if (status === "SUCCESSFUL") {
       alert("Congratulations! You are now a premium user.");
       localStorage.setItem("userRole", "premium"); // Store premium status locally
+      // document.getElementById("payButton").textContent =
+      //   "Premium Membership Active";
+      // document.getElementById("payButton").disabled = true;
     }
   } catch (err) {
     console.error("Error fetching payment status:", err.message);

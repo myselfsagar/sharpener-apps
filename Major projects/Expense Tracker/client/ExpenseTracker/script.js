@@ -86,40 +86,58 @@ document.getElementById("payButton").addEventListener("click", async () => {
   try {
     // Fetch payment session ID from backend
     const response = await axios.post(
-      `${SERVER_BASE_URL}/payment/create-order`,
-      { orderAmount: 500, customerPhone: "9876543210" },
-      { headers: { Authorization: `Bearer ${token}` } }
+      `${SERVER_BASE_URL}/payment/pay`,
+      {},
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
     );
 
-    const { payment_session_id, order_id } = response.data; // Store order_id
+    const { paymentSessionId, orderId } = response.data;
 
+    // Initialize checkout options
     let checkoutOptions = {
-      paymentSessionId: payment_session_id,
-      redirectTarget: "_self",
+      paymentSessionId,
+      // redirectTarget: "_self",
+      //? Modal payment options
+      redirectTarget: "_modal",
+      //? Inline payment options
+      // redirectTarget: document.getElementById("cf_checkout"),
+      // appearance: {
+      //   width: "425px",
+      //   height: "700px",
+      // },
     };
 
-    // Start checkout process
-    await cashfree.checkout(checkoutOptions);
+    // Start the checkout process
+    const result = await cashfree.checkout(checkoutOptions);
 
-    // Check payment status after completion
-    setTimeout(async () => {
-      const paymentResponse = await axios.get(
-        `${SERVER_BASE_URL}/payment/payment-status?orderId=${order_id}`,
+    if (result.error) {
+      // This will be true whenever user clicks on close icon inside the modal or any error happens during the payment
+      console.log(
+        "User has closed the popup or there is some payment error, Check for Payment Status"
+      );
+      console.log(result.error);
+    }
+    if (result.redirect) {
+      // This will be true when the payment redirection page couldn't be opened in the same window
+      // This is an exceptional case only when the page is opened inside an inAppBrowser
+      // In this case the customer will be redirected to return url once payment is completed
+      console.log("Payment will be redirected");
+    }
+    if (result.paymentDetails) {
+      // This will be called whenever the payment is completed irrespective of transaction status
+      console.log("Payment has been completed, Check for Payment Status");
+      console.log(result.paymentDetails.paymentMessage);
+
+      const response = await axios.get(
+        `${SERVER_BASE_URL}/payment/payment-status/${orderId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-
-      alert(`Your payment status is: ${paymentResponse.data.orderStatus}`);
-
-      // If payment is successful, update UI for premium user
-      if (paymentResponse.data.orderStatus === "SUCCESSFUL") {
-        alert("Congratulations! You are now a premium user.");
-        document.getElementById("payButton").textContent =
-          "Premium Membership Active";
-        document.getElementById("payButton").disabled = true;
-      }
-    }, 5000); // Wait for payment completion
+      alert("Your payment is " + response.data.orderStatus);
+    }
   } catch (err) {
     console.error("Error initiating payment:", err.message);
     alert("Payment error. Please try again.");

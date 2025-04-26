@@ -11,10 +11,7 @@ const authMiddleware = async (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
 
     // Verify token
-    const decoded = await jwt.verify(
-      token,
-      process.env.ACCESS_TOKEN_SECRET_KEY
-    );
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY);
     req.userId = decoded.userId;
 
     // Check if user exists

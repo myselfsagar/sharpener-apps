@@ -3,11 +3,13 @@ const authMiddleware = require("../middlewares/authMiddleware");
 const {
   initiatePayment,
   checkPaymentStatus,
+  getPaymentPage,
 } = require("../controllers/paymentController");
 
 const router = express.Router();
 
-router.post("/create-order", authMiddleware, initiatePayment); // Initiates payment
-router.get("/payment-status", authMiddleware, checkPaymentStatus); // Fetches payment status
+router.get("/", authMiddleware, getPaymentPage); // home page
+router.post("/pay", authMiddleware, initiatePayment); // Initiates payment
+router.get("/payment-status/:orderId", authMiddleware, checkPaymentStatus); // Fetches payment status
 
 module.exports = router;
