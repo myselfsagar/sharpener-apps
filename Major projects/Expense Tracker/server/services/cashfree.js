@@ -24,7 +24,7 @@ const createOrder = async (
         customer_phone: customerPhone,
       },
       order_meta: {
-        return_url: `${process.env.CLIENT_BASE_URL}/pages/payment/payment-status.html?orderId=${orderId}`,
+        return_url: `${process.env.CLIENT_BASE_URL}/pages/payment-status.html?orderId=${orderId}`,
         // payment_methods: "cc,dc,upi",
       },
       order_expiry_time: formattedExpiryDate,

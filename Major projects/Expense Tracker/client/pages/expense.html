@@ -25,13 +25,25 @@
         <button type="submit" id="addExpense">Add Expense</button>
       </form>
 
+      <h2>My Expenses</h2>
       <ul id="expenseLists"></ul>
 
       <button id="payButton">Buy premium membership</button>
       <div id="cf_checkout"></div>
+
+      <h2 id="premiumMessage" style="display: none">
+        🎉 You are a premium user now! 🎉
+      </h2>
+
+      <div id="leaderboard" style="display: none">
+        <h3>🏆 Premium Leaderboard 🏆</h3>
+        <ul id="leaderboardList"></ul>
+      </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="script.js"></script>
+    <script src="../scripts/expense.js"></script>
+    <script type="module" src="../scripts/main.js"></script>
+    <script src="../scripts/leaderboard.js"></script>
   </body>
 </html>

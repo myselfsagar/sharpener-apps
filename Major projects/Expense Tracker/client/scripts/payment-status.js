@@ -22,8 +22,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById("orderId").textContent = `Order ID: ${orderId}`;
       document.getElementById("status").textContent = `Status: ${orderStatus}`;
 
+      if (orderStatus === "Success") {
+        localStorage.setItem("user_role", "premium");
+      }
+
       setTimeout(() => {
-        window.location.href = `${process.env.CLIENT_BASE_URL}/index.html`;
+        window.location.replace(`../pages/expense.html`);
       }, 5000);
     } catch (err) {
       console.error("Error fetching payment status:", err.message);

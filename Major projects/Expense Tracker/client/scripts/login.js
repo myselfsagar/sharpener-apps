@@ -8,7 +8,7 @@ async function handleLoginForm(event) {
   const password = event.target.password.value;
 
   try {
-    const response = await axios.post(`${SERVER_BASE_URL}/user/login`, {
+    const response = await axios.post(`${SERVER_BASE_URL}/auth/login`, {
       email,
       password,
     });
@@ -16,7 +16,7 @@ async function handleLoginForm(event) {
 
     localStorage.setItem("access_token", response.data.accessToken);
 
-    window.location.href = "../../ExpenseTracker/index.html";
+    window.location.href = "../pages/expense.html";
   } catch (err) {
     if (!err.status) {
       console.log("Network error:", err.message);

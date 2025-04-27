@@ -136,6 +136,12 @@ document.getElementById("payButton").addEventListener("click", async () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
+
+      if (response.data.orderStatus === "Success") {
+        localStorage.setItem("user_role", "premium");
+        document.getElementById("payButton").disabled = true;
+        window.location.reload();
+      }
       alert("Your payment is " + response.data.orderStatus);
     }
   } catch (err) {

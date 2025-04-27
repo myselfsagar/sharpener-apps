@@ -9,7 +9,7 @@ async function handleSignupForm(event) {
   const password = event.target.password.value;
 
   try {
-    const response = await axios.post(`${SERVER_BASE_URL}/user/signup`, {
+    const response = await axios.post(`${SERVER_BASE_URL}/auth/signup`, {
       name,
       email,
       password,
@@ -19,7 +19,7 @@ async function handleSignupForm(event) {
     //Redirecting to login after some delay.
     alert("User created successfully. Redirecting to login..");
     setTimeout(() => {
-      window.location.href = "../login/login.html";
+      window.location.href = "../pages/login.html";
     }, 2000);
   } catch (err) {
     if (!err.response) {

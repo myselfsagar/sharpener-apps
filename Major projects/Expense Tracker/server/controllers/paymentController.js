@@ -1,10 +1,9 @@
 const cashfreeService = require("../services/cashfree");
 const Payment = require("../models/Payment");
 const User = require("../models/User");
-const TemplateGenerator = require("../Template/htmltemp");
 
 const getPaymentPage = (req, res) => {
-  window.location.replace("../../client/ExpenseTracker/index.html");
+  window.location.replace("../../client/pages/expense.html");
 };
 
 const initiatePayment = async (req, res) => {
