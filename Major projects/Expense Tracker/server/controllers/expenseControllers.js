@@ -1,4 +1,5 @@
 const Expense = require("../models/Expense");
+const User = require("../models/User");
 const bcrypt = require("bcrypt");
 
 const addExpense = async (req, res) => {
@@ -16,6 +17,11 @@ const addExpense = async (req, res) => {
       category,
       userId: req.userId,
     });
+
+    //update the totalExpense in user table
+    const user = await User.findByPk(req.userId);
+    user.totalExpense += amount;
+    await user.save();
 
     res.status(201).json(expense);
   } catch (err) {

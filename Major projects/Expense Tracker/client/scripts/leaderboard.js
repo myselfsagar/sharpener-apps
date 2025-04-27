@@ -14,13 +14,12 @@ export async function showLeaderboard() {
       }
     );
 
-    console.log(response);
-
     leaderboardList.innerHTML = ""; // Clear old data
 
     response.data.forEach((user) => {
       const listItem = document.createElement("li");
-      listItem.textContent = `${user.user.name}: ₹${user.totalExpense}`;
+      listItem.textContent = `${user.name}: ₹${user.totalExpense}`;
+      // listItem.textContent = `${user.user.name}: ₹${user.totalExpense}`;
       leaderboardList.appendChild(listItem);
     });
 

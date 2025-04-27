@@ -4,15 +4,21 @@ const sequelize = require("../config/dbConfig");
 
 const getLeaderboard = async (req, res) => {
   try {
-    const leaderboard = await Expense.findAll({
-      attributes: [
-        "userId",
-        [sequelize.fn("SUM", sequelize.col("amount")), "totalExpense"],
-      ],
-      include: [{ model: User, attributes: ["name"] }],
-      group: ["userId"],
-      order: [[sequelize.fn("SUM", sequelize.col("amount")), "DESC"]],
+    const leaderboard = await User.findAll({
+      attributes: ["name", "totalExpense"],
+      order: [["totalExpense", "DESC"]],
     });
+    console.log(leaderboard);
+
+    // const leaderboard = await Expense.findAll({
+    //   attributes: [
+    //     "userId",
+    //     [sequelize.fn("SUM", sequelize.col("amount")), "totalExpense"],
+    //   ],
+    //   include: [{ model: User, attributes: ["name"] }],
+    //   group: ["userId"],
+    //   order: [[sequelize.fn("SUM", sequelize.col("amount")), "DESC"]],
+    // });
 
     res.status(200).json(leaderboard);
   } catch (err) {
