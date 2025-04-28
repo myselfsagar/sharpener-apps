@@ -2,7 +2,7 @@ import { showLeaderboard } from "./leaderboard.js";
 
 const SERVER_BASE_URL = "http://localhost:4000";
 
-const userStatus = document.addEventListener("DOMContentLoaded", async () => {
+export async function userStatus() {
   const payButton = document.getElementById("payButton");
   const premiumMessage = document.getElementById("premiumMessage");
   const token = localStorage.getItem("access_token");
@@ -23,12 +23,9 @@ const userStatus = document.addEventListener("DOMContentLoaded", async () => {
     if (response.data.role === "premium") {
       payButton.style.display = "none";
       premiumMessage.style.display = "block";
-      showLeaderboard();
       localStorage.setItem("user_role", "premium");
     }
   } catch (err) {
     console.error("Error fetching user data:", err);
   }
-});
-
-export default userStatus;
+}

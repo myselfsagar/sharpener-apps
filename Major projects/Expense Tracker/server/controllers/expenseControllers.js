@@ -1,6 +1,6 @@
 const Expense = require("../models/Expense");
 const User = require("../models/User");
-const bcrypt = require("bcrypt");
+const sequelize = require("../config/dbConfig");
 
 const addExpense = async (req, res) => {
   const { amount, description, category } = req.body;
@@ -10,21 +10,25 @@ const addExpense = async (req, res) => {
     return res.status(400).json({ Error: "All fields are mandatory" });
   }
 
+  const transaction = await sequelize.transaction();
+
   try {
-    const expense = await Expense.create({
-      amount,
-      description,
-      category,
-      userId: req.userId,
-    });
+    const expense = await Expense.create(
+      { amount, description, category, userId: req.userId },
+      { transaction }
+    );
 
     //update the totalExpense in user table
-    const user = await User.findByPk(req.userId);
-    user.totalExpense += amount;
-    await user.save();
+    await User.increment("totalExpense", {
+      by: amount,
+      where: { id: req.userId },
+      transaction,
+    });
 
+    await transaction.commit();
     res.status(201).json(expense);
   } catch (err) {
+    await transaction.rollback();
     console.log("Error while adding expense", err);
     return res
       .status(500)
@@ -47,17 +51,31 @@ const getAllExpenses = async (req, res) => {
 
 const deleteExpense = async (req, res) => {
   try {
-    const expenseId = req.params.id;
+    const transaction = await sequelize.transaction();
 
-    const expense = await Expense.destroy({
+    const expenseId = req.params.id;
+    const expense = await Expense.findOne({
       where: { id: expenseId, userId: req.userId },
+      transaction,
     });
-    if (expense === 0) {
+
+    if (!expense) {
+      await transaction.rollback();
       return res.status(404).json({ Error: "Expense not found" });
     }
+
+    await Expense.destroy({ where: { id: expenseId }, transaction });
+    await User.decrement("totalExpense", {
+      by: expense.amount,
+      where: { id: req.userId },
+      transaction,
+    });
+
+    await transaction.commit();
     res.status(200).json({ Message: "Expense deleted successfully" });
   } catch (err) {
-    console.log("Error while deleting expense", err);
+    await transaction.rollback();
+    console.error("Error while deleting expense:", err);
     return res
       .status(500)
       .json({ Error: `Error while deleting expense - ${err.message}` });

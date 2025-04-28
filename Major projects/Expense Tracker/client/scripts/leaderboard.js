@@ -14,17 +14,20 @@ export async function showLeaderboard() {
       }
     );
 
-    leaderboardList.innerHTML = ""; // Clear old data
+    leaderboardList.innerHTML = "";
 
     response.data.forEach((user) => {
       const listItem = document.createElement("li");
       listItem.textContent = `${user.name}: ₹${user.totalExpense}`;
-      // listItem.textContent = `${user.user.name}: ₹${user.totalExpense}`;
       leaderboardList.appendChild(listItem);
     });
 
-    leaderboardDiv.style.display = "block"; // ✅ Show leaderboard
+    leaderboardDiv.style.display = "block";
   } catch (err) {
     console.error("Error fetching leaderboard:", err.message);
   }
 }
+
+document
+  .getElementById("showLeaderboard")
+  .addEventListener("click", showLeaderboard);
