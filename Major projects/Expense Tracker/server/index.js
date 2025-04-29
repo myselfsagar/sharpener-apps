@@ -7,17 +7,8 @@ const cors = require("cors");
 //connect to db
 const dbConnection = require("./config/dbConfig");
 
-//all models
-const User = require("./models/User");
-const Expense = require("./models/Expense");
-const Payment = require("./models/Payment");
-
-//association
-User.hasMany(Expense);
-Expense.belongsTo(User);
-
-Payment.belongsTo(User, { foreignKey: "userId" });
-User.hasMany(Payment, { foreignKey: "userId", onDelete: "CASCADE" });
+//models
+require("./models");
 
 //import all routes
 const authRoutes = require("./routes/authRoutes");
