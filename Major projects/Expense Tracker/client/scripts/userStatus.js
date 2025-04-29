@@ -5,6 +5,7 @@ const SERVER_BASE_URL = "http://localhost:4000";
 export async function userStatus() {
   const payButton = document.getElementById("payButton");
   const premiumMessage = document.getElementById("premiumMessage");
+  const showLeaderboard = document.getElementById("showLeaderboard");
   const token = localStorage.getItem("access_token");
 
   if (!token) {
@@ -23,6 +24,7 @@ export async function userStatus() {
     if (response.data.role === "premium") {
       payButton.style.display = "none";
       premiumMessage.style.display = "block";
+      showLeaderboard.style.display = "";
       localStorage.setItem("user_role", "premium");
     }
   } catch (err) {

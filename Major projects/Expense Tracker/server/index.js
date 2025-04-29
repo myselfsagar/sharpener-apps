@@ -22,6 +22,7 @@ User.hasMany(Payment, { foreignKey: "userId", onDelete: "CASCADE" });
 //import all routes
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
+const resetPasswordRoutes = require("./routes/resetPasswordRoutes");
 const expenseRoutes = require("./routes/expenseRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 const premiumRoutes = require("./routes/premiumRoutes");
@@ -33,6 +34,7 @@ app.use(cors({ origin: "http://127.0.0.1:5500" }));
 //use all routes
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
+app.use("/password", resetPasswordRoutes);
 app.use("/expense", expenseRoutes);
 app.use("/payment", paymentRoutes);
 app.use("/premium", premiumRoutes);

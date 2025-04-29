@@ -12,7 +12,6 @@ async function handleLoginForm(event) {
       email,
       password,
     });
-    console.log(response);
 
     localStorage.setItem("access_token", response.data.accessToken);
 
