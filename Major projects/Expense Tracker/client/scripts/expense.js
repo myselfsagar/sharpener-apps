@@ -149,3 +149,88 @@ document.getElementById("payButton").addEventListener("click", async () => {
     alert("Payment error. Please try again.");
   }
 });
+
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const userResponse = await axios.get(
+      `${SERVER_BASE_URL}/user/get-user-profile`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    if (userResponse.data.role === "premium") {
+      document.getElementById("downloadExpense").disabled = false;
+    }
+    const dailyData = [
+      {
+        date: "01-03-2021",
+        description: "Milk",
+        category: "Milk",
+        income: 0,
+        expense: 60,
+      },
+      {
+        date: "04-03-2021",
+        description: "Salary",
+        category: "Salary",
+        income: 40000,
+        expense: 0,
+      },
+      {
+        date: "04-03-2021",
+        description: "Fruits",
+        category: "Fruits",
+        income: 0,
+        expense: 500,
+      },
+      {
+        date: "05-03-2021",
+        description: "Party",
+        category: "Birthday Treat",
+        income: 0,
+        expense: 500,
+      },
+    ];
+
+    const yearlyData = [
+      { month: "March", income: 60000, expense: 5670, savings: 54330 },
+    ];
+    const notesData = [
+      { date: "11-02-2021", notes: "Gave advance to construction." },
+    ];
+
+    populateTable("dailyReport", dailyData);
+    populateTable("yearlyReport", yearlyData);
+    populateTable("notesReport", notesData);
+  } catch (err) {
+    console.error("Error loading expense data:", err.message);
+  }
+});
+
+function populateTable(tableId, data) {
+  const tableBody = document.getElementById(tableId).querySelector("tbody");
+  data.forEach((row) => {
+    const tr = document.createElement("tr");
+    Object.values(row).forEach((cellData) => {
+      const td = document.createElement("td");
+      td.textContent = cellData;
+      tr.appendChild(td);
+    });
+    tableBody.appendChild(tr);
+  });
+}
+
+async function download() {
+  try {
+    await axios.get(`${SERVER_BASE_URL}/user/download`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    //the bcakend is essentially sending a download link, which if we open in browser, the file would download
+    var a = document.createElement("a");
+    a.href = response.data.fileUrl;
+    a.download = "myexpense.csv";
+    a.click();
+  } catch (err) {
+    console.log("Error downloading expense", err);
+  }
+}

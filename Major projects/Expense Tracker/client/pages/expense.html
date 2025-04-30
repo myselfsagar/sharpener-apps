@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Expense Tracker App</title>
+    <link rel="stylesheet" href="../styles/expense.css" />
     <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
   </head>
   <body>
@@ -42,6 +43,61 @@
       <div id="leaderboard" style="display: none">
         <h3>🏆 Premium Leaderboard 🏆</h3>
         <ul id="leaderboardList"></ul>
+      </div>
+
+      <div class="report-generation">
+        <h2 style="text-align: center">Day to Day Expenses</h2>
+        <p>16 March 2021, 01:16 PM</p>
+        <h3 id="year">2021</h3>
+        <h4 id="month-year">March 2021</h4>
+        <table id="dailyReport">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Description</th>
+              <th>Category</th>
+              <th>Income</th>
+              <th>Expense</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Add rows with the help of js -->
+          </tbody>
+        </table>
+
+        <!-- Yearly Report -->
+        <h4 id="yearly-report-heading">Yearly Report</h4>
+        <table id="yearlyReport">
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>Income</th>
+              <th>Expense</th>
+              <th>Saving</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Add rows with the help of js -->
+          </tbody>
+        </table>
+
+        <!-- Notes Report -->
+        <h4 id="notes-report-heading">Notes Report 2021</h4>
+        <table id="notesReport">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Add rows with the help of js -->
+          </tbody>
+        </table>
+
+        <button id="downloadExpense" disabled onclick="download()">
+          Download Expense
+        </button>
       </div>
     </div>
 
