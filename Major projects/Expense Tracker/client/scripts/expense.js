@@ -95,7 +95,7 @@ function renderPages(pagination) {
   }
 }
 
-async function fetchAllExpenses(page = 1, limit = 5) {
+async function fetchAllExpenses(page = 1, limit = getExpenseCountPreference()) {
   try {
     const response = await axios.get(
       `${SERVER_BASE_URL}/expense/get-all-expenses?page=${page}&limit=${limit}`,
@@ -106,14 +106,29 @@ async function fetchAllExpenses(page = 1, limit = 5) {
     const { expenses, pagination } = response.data.data;
 
     document.getElementById("expenseLists").innerHTML = "";
-
     expenses.forEach(createExpenseList);
     renderPages(pagination);
+
+    // Update expense summary text
+    const startExpense = (page - 1) * limit + 1;
+    const endExpense = Math.min(page * limit, pagination.totalRecords);
+
+    document.getElementById(
+      "expenseSummary"
+    ).textContent = `Showing ${startExpense}-${endExpense} of ${pagination.totalRecords}`;
   } catch (err) {
     console.error(err);
     alert(err.message);
   }
 }
+
+function getExpenseCountPreference() {
+  return parseInt(localStorage.getItem("expenseCount")) || 3;
+}
+document.getElementById("expenseCount").addEventListener("change", (event) => {
+  localStorage.setItem("expenseCount", event.target.value);
+  fetchAllExpenses(1, parseInt(event.target.value));
+});
 
 document.addEventListener("DOMContentLoaded", fetchAllExpenses);
 
@@ -245,6 +260,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
+//handling table
 function populateTable(tableId, data) {
   const tableBody = document.getElementById(tableId).querySelector("tbody");
   data.forEach((row) => {

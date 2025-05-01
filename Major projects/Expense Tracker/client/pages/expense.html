@@ -27,6 +27,17 @@
       </form>
 
       <h2>My Expenses</h2>
+      <div id="dynamicPagination">
+        <label for="expenseCount">Rows per page:</label>
+        <select id="expenseCount" name="expenseCount">
+          <option value="3">3</option>
+          <option value="5">5</option>
+          <option value="7">7</option>
+          <option value="10">10</option>
+        </select>
+        <p id="expenseSummary"></p>
+      </div>
+
       <ul id="expenseLists"></ul>
       <div id="pagination"></div>
 

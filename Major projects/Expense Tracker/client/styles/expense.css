@@ -58,3 +58,9 @@ button#downloadExpenses:disabled {
   background-color: #28a745; /* Green for Active Page */
   font-weight: bold;
 }
+
+/* #dynamicPagination {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+} */
