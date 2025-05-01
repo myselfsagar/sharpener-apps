@@ -62,15 +62,53 @@ async function handleExpenseForm(event) {
   }
 }
 
-async function fetchAllExpenses() {
+function renderPages(pagination) {
+  const paginationContainer = document.getElementById("pagination");
+
+  paginationContainer.innerHTML = ""; //Clear old pagination buttons
+
+  // Previous Page Button
+  if (pagination.previousPage) {
+    const prevBtn = document.createElement("button");
+    prevBtn.textContent = "<<";
+    prevBtn.onclick = () => fetchAllExpenses(pagination.previousPage);
+    paginationContainer.appendChild(prevBtn);
+  }
+
+  // Page Number Buttons (1,2,3,...,7)
+  pagination.pages.forEach((pageNum) => {
+    const pageBtn = document.createElement("button");
+    pageBtn.innerText = pageNum;
+    if (pageNum === pagination.currentPage) {
+      pageBtn.style.fontWeight = "bold";
+    }
+    pageBtn.onclick = () => fetchAllExpenses(pageNum);
+    paginationContainer.appendChild(pageBtn);
+  });
+
+  // Next Page Button
+  if (pagination.nextPage) {
+    const nextBtn = document.createElement("button");
+    nextBtn.textContent = ">>";
+    nextBtn.onclick = () => fetchAllExpenses(pagination.nextPage);
+    paginationContainer.appendChild(nextBtn);
+  }
+}
+
+async function fetchAllExpenses(page = 1, limit = 5) {
   try {
     const response = await axios.get(
-      `${SERVER_BASE_URL}/expense/get-all-expenses`,
+      `${SERVER_BASE_URL}/expense/get-all-expenses?page=${page}&limit=${limit}`,
       {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
-    response.data.forEach(createExpenseList);
+    const { expenses, pagination } = response.data.data;
+
+    document.getElementById("expenseLists").innerHTML = "";
+
+    expenses.forEach(createExpenseList);
+    renderPages(pagination);
   } catch (err) {
     console.error(err);
     alert(err.message);

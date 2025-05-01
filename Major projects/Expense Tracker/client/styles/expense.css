@@ -28,3 +28,33 @@ button#downloadExpenses:disabled {
   background-color: #ccc;
   cursor: not-allowed;
 }
+
+#pagination {
+  display: flex;
+  /* justify-content: center; */
+  margin-block: 20px;
+}
+
+#pagination button {
+  padding: 4px 8px;
+  margin: 5px;
+  border: 1px solid #ccc8c8;
+  background-color: #f4f4f4; /* Primary Blue */
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+#pagination button:hover {
+  background-color: #e8e3e3; /* Darker Blue on Hover */
+}
+
+#pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+#pagination button.active {
+  background-color: #28a745; /* Green for Active Page */
+  font-weight: bold;
+}

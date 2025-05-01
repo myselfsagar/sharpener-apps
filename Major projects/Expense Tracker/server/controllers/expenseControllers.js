@@ -38,14 +38,41 @@ const addExpense = async (req, res) => {
 
 const getAllExpenses = async (req, res) => {
   try {
-    const expenses = await Expense.findAll({ where: { userId: req.userId } });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = (page - 1) * limit;
 
-    res.status(200).json(expenses);
+    const { count, rows: expenses } = await Expense.findAndCountAll({
+      where: { userId: req.userId },
+      limit,
+      offset,
+      order: [["createdAt", "DESC"]],
+    });
+
+    const totalPages = Math.ceil(count / limit);
+
+    res.status(200).json({
+      success: true,
+      message: "Expenses fetched successfully",
+      data: {
+        expenses,
+        pagination: {
+          totalRecords: count,
+          totalPages,
+          currentPage: page,
+          previousPage: page > 1 ? page - 1 : null,
+          nextPage: page < totalPages ? page + 1 : null,
+          pages: [...Array(totalPages).keys()].map((i) => i + 1),
+        },
+      },
+    });
   } catch (err) {
-    console.log("Error while fetching expenses", err);
-    return res
-      .status(500)
-      .json({ Error: `Error while fetching expenses - ${err.message}` });
+    console.error("Error fetching expenses:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Error fetching expenses",
+      error: err.message,
+    });
   }
 };
 
