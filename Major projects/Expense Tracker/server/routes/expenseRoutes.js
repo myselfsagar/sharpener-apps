@@ -13,5 +13,15 @@ router.delete(
   authMiddleware,
   expenseControllers.deleteExpense
 );
+router.get(
+  "/download-expenses",
+  authMiddleware,
+  expenseControllers.downloadExpenses
+);
+router.get(
+  "/download-expense-history",
+  authMiddleware,
+  expenseControllers.getExpenseDownloads
+);
 
 module.exports = router;

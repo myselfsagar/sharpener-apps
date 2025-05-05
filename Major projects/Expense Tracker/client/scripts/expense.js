@@ -130,9 +130,7 @@ document.getElementById("expenseCount").addEventListener("change", (event) => {
   fetchAllExpenses(1, parseInt(event.target.value));
 });
 
-document.addEventListener("DOMContentLoaded", fetchAllExpenses);
-
-// Initialize Cashfree
+// --------------- Handle Cashfree payment ---------------
 const cashfree = Cashfree({ mode: "sandbox" });
 
 document.getElementById("payButton").addEventListener("click", async () => {
@@ -260,7 +258,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-//handling table
+//-------------- handling table -------------------
 function populateTable(tableId, data) {
   const tableBody = document.getElementById(tableId).querySelector("tbody");
   data.forEach((row) => {
@@ -274,17 +272,79 @@ function populateTable(tableId, data) {
   });
 }
 
-async function download() {
+//--------------- download expense and history----------------
+// Function to handle both fetching history and downloading expenses
+async function handleExpenseDownload(
+  fileName = "myexpense.csv",
+  downloadUrl = null
+) {
   try {
-    await axios.get(`${SERVER_BASE_URL}/user/download`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    //the bcakend is essentially sending a download link, which if we open in browser, the file would download
-    var a = document.createElement("a");
-    a.href = response.data.fileUrl;
-    a.download = "myexpense.csv";
+    if (!downloadUrl) {
+      const response = await axios.get(
+        `${SERVER_BASE_URL}/expense/download-expenses`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (!response.data.fileUrl) {
+        alert("Failed to generate expense file!");
+        throw new Error(response.data.message);
+      }
+
+      downloadUrl = response.data.fileUrl;
+      fileName = `My_Expenses_${Date.now()}.csv`;
+    }
+
+    // Trigger file download
+    const a = document.createElement("a");
+    a.href = downloadUrl;
+    a.download = fileName;
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
   } catch (err) {
-    console.log("Error downloading expense", err);
+    console.error("Error downloading expense file:", err.message);
+    alert("Error occurred while downloading expenses.");
   }
 }
+
+// Update download history dynamically on UI
+function updateDownloadHistory(fileName, fileUrl) {
+  const historyContainer = document.getElementById("downloadHistory");
+  const liItem = document.createElement("li");
+  liItem.innerHTML = `${fileName} - 
+  <button onclick="handleExpenseDownload('${fileName}', '${fileUrl}')">Download</button>
+  `;
+  historyContainer.appendChild(liItem);
+}
+
+// Fetch previous download history from backend and populate UI
+async function fetchDownloadHistory() {
+  try {
+    const response = await axios.get(
+      `${SERVER_BASE_URL}/expense/download-expense-history`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    const historyContainer = document.getElementById("downloadHistory");
+    historyContainer.innerHTML = ""; //clear previous history
+    console.log(response.data);
+
+    response.data.files.forEach((file) => {
+      updateDownloadHistory(file.fileName, file.fileUrl);
+    });
+  } catch (err) {
+    console.log("Error fetching downloads", err.message);
+  }
+}
+
+document
+  .getElementById("downloadExpense")
+  .addEventListener("click", () => handleExpenseDownload());
+document.addEventListener("DOMContentLoaded", function () {
+  fetchAllExpenses();
+  fetchDownloadHistory();
+});

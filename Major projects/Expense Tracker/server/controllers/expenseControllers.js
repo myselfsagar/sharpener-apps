@@ -1,6 +1,8 @@
 const Expense = require("../models/Expense");
 const User = require("../models/User");
+const ExpenseFile = require("../models/ExpenseFile");
 const sequelize = require("../config/dbConfig");
+const s3 = require("../services/s3Service");
 
 const addExpense = async (req, res) => {
   const { amount, description, category } = req.body;
@@ -109,8 +111,69 @@ const deleteExpense = async (req, res) => {
   }
 };
 
+const downloadExpenses = async (req, res) => {
+  try {
+    const expenses = await Expense.findAll({ where: { userId: req.userId } });
+    if (!expenses.length) {
+      return res.status(404).json({ error: "No expenses found!" });
+    }
+    let fileContent = "Id,Amount,Category,Description,Time\n";
+    expenses.map((exp) => {
+      fileContent += `${exp.id}, ${exp.amount}, ${exp.category}, ${exp.description}, ${exp.createdAt}\n`;
+    });
+    // fs.writeFileSync(filePath, fileContent);
+
+    const fileName = `Expenses_${req.userId}_${new Date()}.csv`;
+
+    const uploadParams = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: fileName,
+      Body: fileContent,
+      ACL: "public-read",
+      ContentType: "text/csv",
+    };
+
+    const uploadResult = await s3.upload(uploadParams).promise();
+
+    //Update in the Download history table
+    await ExpenseFile.create({
+      userId: req.userId,
+      fileUrl: uploadResult.Location,
+      fileName,
+    });
+
+    res.json({
+      success: true,
+      fileUrl: uploadResult.Location,
+    });
+  } catch (err) {
+    console.error("Error generating expense report:", err);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to generate report" });
+  }
+};
+
+const getExpenseDownloads = async (req, res) => {
+  try {
+    const files = await ExpenseFile.findAll({
+      where: { userId: req.userId },
+      order: [["downloadedAt", "DESC"]],
+    });
+
+    res.json({ success: true, files });
+  } catch (err) {
+    console.error("Error getting expense downloads:", err);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to get expense downloads" });
+  }
+};
+
 module.exports = {
   addExpense,
   getAllExpenses,
   deleteExpense,
+  downloadExpenses,
+  getExpenseDownloads,
 };

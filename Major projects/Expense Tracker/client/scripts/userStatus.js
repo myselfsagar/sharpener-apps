@@ -6,6 +6,7 @@ export async function userStatus() {
   const payButton = document.getElementById("payButton");
   const premiumMessage = document.getElementById("premiumMessage");
   const showLeaderboard = document.getElementById("showLeaderboard");
+  const downloadExpense = document.getElementById("downloadExpense");
   const token = localStorage.getItem("access_token");
 
   if (!token) {
@@ -25,6 +26,7 @@ export async function userStatus() {
       payButton.style.display = "none";
       premiumMessage.style.display = "block";
       showLeaderboard.style.display = "";
+      downloadExpense.disabled = false;
       localStorage.setItem("user_role", "premium");
     }
   } catch (err) {

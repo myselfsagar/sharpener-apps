@@ -33,7 +33,7 @@ const accessLogStream = fs.createWriteStream(
 app.use(express.json());
 // app.use(helmet());
 app.use(compression());
-app.use(morgan("combined", { stream: accessLogStream }));
+// app.use(morgan("combined", { stream: accessLogStream }));
 // app.use(cors({ origin: "http://127.0.0.1:5500" }));
 let origin = "http://127.0.0.1:5500";
 if (process.env.NODE_ENV === "production") {
